@@ -69,6 +69,39 @@ var map = new mapboxgl.Map({
   // Ajout des données
       
 map.on('load', function () {   
+
+// Load an image from an external URL.
+map.loadImage(
+'https://raw.githubusercontent.com/bruhnild/chu-angers/main/icons/parking-lot.png',
+(error, image) => {
+if (error) throw error;
+ 
+// Add the image to the map style.
+map.addImage('parking', image);
+
+
+     // Ajout parkings
+  
+  map.addSource('Parkings', {
+            type: 'geojson',
+            data: 'https://raw.githubusercontent.com/bruhnild/chu-angers/main/data/parkings.geojson'
+        });
+
+
+    map.addLayer({
+    'id': 'Parkings',
+    'type': 'symbol',
+    'source': 'Parkings', 
+    "layout": {
+    "icon-size": 0.05,
+    "icon-image": "parking",
+    },
+    "maxzoom": 24,
+    "minzoom": 0
+    });    
+
+}
+);
    //BATIMENTS 
 
 map.addSource('Batiments', {
@@ -147,33 +180,6 @@ map.addLayer({
                       'circle-color': '#0074D9'}}
                  );  
   
-     // Ajout stations de metros
-  
-  map.addSource('Parkings', {
-            type: 'geojson',
-            data: 'https://raw.githubusercontent.com/bruhnild/chu-angers/main/data/parkings.geojson'
-        });
-
-     // map.addLayer({
-     //        'id': 'Parkings',
-     //        'type': 'circle',
-     //        'source': 'Parkings',
-     //        'paint': {'circle-stroke-color': 'white', 
-     //                  'circle-stroke-width': 3, 
-     //                  'circle-radius' : 6,
-     //                  'circle-color': '#0074D9'}}
-     //             ); 
-
-    map.addLayer({
-    'id': 'Parkings',
-    'type': 'symbol',
-    'source': 'point', 
-    'layout': {
-    'icon-image': 'https://raw.githubusercontent.com/bruhnild/chu-angers/main/icons/parking-lot.png', 
-    'icon-size': 0.25
-    }
-    });
-
 
          });
   
