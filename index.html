@@ -48,8 +48,8 @@
 <input type="checkbox" id="Parkings" value="Parkings" onchange="switchlayer('Parkings')" checked/>
 <label for="Parkings">Parkings</label>
           <br>
-<input type="checkbox" id="Lignes" value="Lignes" onchange="switchlayer('Lignes')" checked/>
-<label for="Lignes">Lignes de métro</label>
+<input type="checkbox" id="Transports en commun" value="Transports en commun" onchange="switchlayer('Transports en commun')" checked/>
+<label for="Transports en commun">Transports en commun</label>
   <hr>
 </div>
 <script>
@@ -132,19 +132,21 @@ map.addLayer({
    
      // Ajout lignes de metros
   
-     map.addSource('lignes', {
+     map.addSource('transport', {
             type: 'geojson',
-            data: 'https://raw.githubusercontent.com/mastersigat/data/main/metro-du-reseau-star-traces-de-laxe-des-lignes.geojson'
+            data: 'https://raw.githubusercontent.com/bruhnild/chu-angers/main/data/transport.geojson'
         });
 
      map.addLayer({
-            'id': 'Lignes',
-            'type': 'line',
-            'source': 'lignes',
-            'paint': {'line-opacity': 0.7, 'line-width': 7,
-                     'line-color': '#0074D9'}
-     });   
-   
+            'id': 'Transports en commun',
+            'type': 'circle',
+            'source': 'transport',
+            'paint': {'circle-stroke-color': 'white', 
+                      'circle-stroke-width': 3, 
+                      'circle-radius' : 6,
+                      'circle-color': '#0074D9'}}
+                 );  
+  
      // Ajout stations de metros
   
   map.addSource('Parkings', {
@@ -152,15 +154,27 @@ map.addLayer({
             data: 'https://raw.githubusercontent.com/bruhnild/chu-angers/main/data/parkings.geojson'
         });
 
-     map.addLayer({
-            'id': 'Parkings',
-            'type': 'circle',
-            'source': 'Parkings',
-            'paint': {'circle-stroke-color': 'white', 
-                      'circle-stroke-width': 3, 
-                      'circle-radius' : 6,
-                      'circle-color': '#0074D9'}}
-                 );  
+     // map.addLayer({
+     //        'id': 'Parkings',
+     //        'type': 'circle',
+     //        'source': 'Parkings',
+     //        'paint': {'circle-stroke-color': 'white', 
+     //                  'circle-stroke-width': 3, 
+     //                  'circle-radius' : 6,
+     //                  'circle-color': '#0074D9'}}
+     //             ); 
+
+    map.addLayer({
+    'id': 'Parkings',
+    'type': 'symbol',
+    'source': 'point', 
+    'layout': {
+    'icon-image': 'https://raw.githubusercontent.com/bruhnild/chu-angers/main/icons/parking-lot.png', 
+    'icon-size': 0.25
+    }
+    });
+
+
          });
   
   
@@ -172,7 +186,7 @@ var popup = new mapboxgl.Popup({
     closeOnClick: false });
 
 map.on('mousemove', function(e) {
-    var features = map.queryRenderedFeatures(e.point, { layers: ['Stations'] });
+    var features = map.queryRenderedFeatures(e.point, { layers: ['Parkings'] });
     // Change the cursor style as a UI indicator.
     map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
 
@@ -182,7 +196,7 @@ map.on('mousemove', function(e) {
  
     var feature = features[0];
         popup.setLngLat(feature.geometry.coordinates)
-          .setHTML('<b>'+ feature.properties.nom + '</b>')
+          .setHTML('<b>'+ feature.properties.layer + '</b>')
         .addTo(map);
 
 });
