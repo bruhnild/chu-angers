@@ -66,18 +66,14 @@ var map = new mapboxgl.Map({
   minZoom:14.5
     });
 
+const images =[
+  {imageUrl: 'https://res.cloudinary.com/do0y4qr5g/image/upload/v1686579525/chu_angers/parking-lot_vphpxp.png', id: 'image_1'},
+  {imageUrl: 'https://res.cloudinary.com/do0y4qr5g/image/upload/v1686579525/chu_angers/disabled_parking_gw5oa5.png', id: 'image_2'}
+]
+
   // Ajout des données
       
 map.on('load', function () {   
-
-// Load an image from an external URL.
-map.loadImage(
-'https://raw.githubusercontent.com/bruhnild/chu-angers/main/icons/parking-lot.png',
-(error, image) => {
-if (error) throw error;
- 
-// Add the image to the map style.
-map.addImage('parking', image);
 
 
      // Ajout parkings
@@ -94,14 +90,15 @@ map.addImage('parking', image);
     'source': 'Parkings', 
     "layout": {
     "icon-size": 0.05,
-    "icon-image": "parking",
+    "icon-image": [
+      "get",
+      "url"
+    ],
     },
     "maxzoom": 24,
     "minzoom": 0
-    });    
+    });   
 
-}
-);
    //BATIMENTS 
 
 map.addSource('Batiments', {
