@@ -43,10 +43,10 @@
  <input type="checkbox" id="Batiments" value="Batiments" onchange="switchlayer('Batiments')" checked/>
 <label for="Batiments">Batiments</label>
           <hr>
-<label class="categoryLabel"><B>Données TC</B></label>
+<label class="categoryLabel"><B>Infos pratiques</B></label>
           <br>
-<input type="checkbox" id="Stations" value="Stations" onchange="switchlayer('Stations')" checked/>
-<label for="Stations">Stations de métro</label>
+<input type="checkbox" id="Parkings" value="Parkings" onchange="switchlayer('Parkings')" checked/>
+<label for="Parkings">Parkings</label>
           <br>
 <input type="checkbox" id="Lignes" value="Lignes" onchange="switchlayer('Lignes')" checked/>
 <label for="Lignes">Lignes de métro</label>
@@ -58,7 +58,7 @@
     
 var map = new mapboxgl.Map({
   container: 'map',
-  style: 'https://openmaptiles.geo.data.gouv.fr/styles/osm-bright/style.json', //Fond de carte 
+  style: 'https://makinamaps.makina-corpus.net/styles/basic/style.json', //Fond de carte 
   zoom: 16.83, // Zoom
   center: [-0.55592, 47.482062],  // Centrage carte
   pitch: 37, // Inclinaison carte
@@ -73,29 +73,62 @@ map.on('load', function () {
 
 map.addSource('Batiments', {
         type: 'geojson',
-        data: 'https://raw.githubusercontent.com/mastersigat/data/main/BatiRennes.geojson'
+        data: 'https://raw.githubusercontent.com/bruhnild/chu-angers/main/data/chu_bati.geojson'
     });
  
+
+
 map.addLayer({
     'id': 'Batiments',
     'type': 'fill-extrusion',
     'source': 'Batiments',
-	'paint': 
-	{'fill-extrusion-color': '#A9A9A9', 
-        'fill-extrusion-height':{'type': 'identity','property': 'HAUTEUR'},
-        'fill-extrusion-color': {
-        'property': 'HAUTEUR',
-        'stops': [
-          [5, '#1a9850'],
-          [7, '#91cf60'],
-          [9, '#d9ef8b'],
-          [12, '#ffffbf'],
-      	  [16, '#fee08b'],
-	  [20, '#fc8d59'],
-          [30, '#d73027']]},
-	 'fill-extrusion-opacity': 0.7,
-         'fill-extrusion-base': 0}
-    });
+    "paint": {
+      "fill-extrusion-base": 0,
+      "fill-extrusion-color": [
+        "match",
+        [
+          "get",
+          "fonction"
+        ],
+        "B",
+        "hsl(96, 44%, 62%)",
+        "C",
+        "hsl(44, 21%, 51%)",
+        "D",
+        "hsl(204, 54%, 60%)",
+        "E",
+        "hsl(34, 82%, 58%)",
+        "F",
+        "hsl(328, 70%, 64%)",
+        "G",
+        "hsl(180, 8%, 53%)",
+        "H",
+        "hsl(282, 26%, 67%)",
+        "Autre établissement",
+        "hsl(39, 29%, 86%)",
+        "#000000"
+      ],
+      "fill-extrusion-height": [
+        "interpolate",
+        [
+          "linear"
+        ],
+        [
+          "get",
+          "hauteur"
+        ],
+        0,
+        0,
+        26,
+        100
+      ],
+      'fill-extrusion-opacity': 0.7
+    },
+    "maxzoom": 24,
+    "minzoom": 0
+  });
+
+
    
      // Ajout lignes de metros
   
@@ -114,15 +147,15 @@ map.addLayer({
    
      // Ajout stations de metros
   
-  map.addSource('Stations', {
+  map.addSource('Parkings', {
             type: 'geojson',
-            data: 'https://raw.githubusercontent.com/mastersigat/data/main/metro-du-reseau-star-localisation-des-stations.geojson'
+            data: 'https://raw.githubusercontent.com/bruhnild/chu-angers/main/data/parkings.geojson'
         });
 
      map.addLayer({
-            'id': 'Stations',
+            'id': 'Parkings',
             'type': 'circle',
-            'source': 'Stations',
+            'source': 'Parkings',
             'paint': {'circle-stroke-color': 'white', 
                       'circle-stroke-width': 3, 
                       'circle-radius' : 6,
