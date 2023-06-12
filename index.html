@@ -40,25 +40,26 @@
     <hr>
 <label class="categoryLabel"><B>CHU d'Angers</B></label>
           <br>
- <input type="checkbox" id="Batiments" value="Batiments" onchange="switchlayer('Batiments')" checked/>
-<label for="Batiments">Batiments</label>
+<input type="checkbox" id="Batiments" name="Batiments" onchange="switchlayer('Batiments')" checked />
+<label for="Batiments">Bâtiments</label>
           <hr>
 <label class="categoryLabel"><B>Infos pratiques</B></label>
           <br>
-<input type="checkbox" id="Parkings" value="Parkings" onchange="switchlayer('Parkings')" checked/>
+<input type="checkbox" id="Parkings" name="Parkings" onchange="switchlayer('Parkings')" checked />
 <label for="Parkings">Parkings</label>
           <br>
-<input type="checkbox" id="Parkings PMR" value="Parkings PMR" onchange="switchlayer('Parkings PMR')" checked/>
-<label for="Parkings">Parkings PMR</label>
+<input type="checkbox" id="Parkings PMR" name="Parkings PMR" onchange="switchlayer('Parkings PMR')" checked />
+<label for="Parkings PMR">Parkings PMR</label>
           <br>  
-<input type="checkbox" id="Parkings vélos" value="Parkings vélos" onchange="switchlayer('Parkings vélos')" checked/>
-<label for="Parkings">Parkings vélos</label>
+<input type="checkbox" id="Parkings velos" name="Parkings velos" onchange="switchlayer('Parkings velos')" checked />
+<label for="Parkings velos">Parkings vélos</label>
           <br>                 
-<input type="checkbox" id="Arrets de bus" value="Arrets de bus" onchange="switchlayer('Arrets de bus')" checked/>
-<label for="Arrets de bus">Arrets de bus</label>
-          <br>                 
-<input type="checkbox" id="Arrets de tramway" value="Arrets de tramway" onchange="switchlayer('Arrets de tramway')" checked/>
-<label for="Arrets de tramway">Arrets de tramway</label>
+<input type="checkbox" id="Arrets de bus" name="Arrets de bus" onchange="switchlayer('Arrets de bus')" checked />
+<label for="Arrets de bus">Arrêts de bus</label>
+          <br>               
+<input type="checkbox" id="Arrets de tramway" name="Arrets de tramway" onchange="switchlayer('Arrets de tramway')" checked />
+<label for="Arrets de tramway">Arrêts de tramway</label>
+<br>
   <hr>
 </div>
 <script>
@@ -126,16 +127,16 @@ map.addImage('parking_velo', image);
 
      // Ajout parkings
   
-  map.addSource('Parkings vélos', {
+  map.addSource('Parkings velos', {
             type: 'geojson',
             data: 'https://raw.githubusercontent.com/bruhnild/chu-angers/main/data/parkings.geojson'
         });
 
 
 map.addLayer({
-'id': 'Parkings vélos',
+'id': 'Parkings velos',
 'type': 'symbol',
-'source': 'Parkings vélos', // reference the data source
+'source': 'Parkings velos', // reference the data source
 'layout': {
 'icon-image': 'parking_velo', // reference the image
 'icon-size': 0.05
@@ -182,7 +183,7 @@ filter: ['==', 'layer', 'Parking']
 // ARRETS DE BUS
 
 map.loadImage(
-'https://res.cloudinary.com/do0y4qr5g/image/upload/e_background_removal/v1686583925/chu_angers/bus_stop_u3aukd.png',
+'https://res.cloudinary.com/do0y4qr5g/image/upload/v1686583925/chu_angers/bus_stop_u3aukd.png',
 (error, image) => {
 if (error) throw error;
 
@@ -191,21 +192,21 @@ map.addImage('arret_bus', image);
 
      // Ajout parkings
   
-     map.addSource('Arret de bus', {
+     map.addSource('Arrets de bus', {
             type: 'geojson',
             data: 'https://raw.githubusercontent.com/bruhnild/chu-angers/main/data/transport.geojson'
         });
 
 
 map.addLayer({
-'id': 'Arret de bus',
+'id': 'Arrets de bus',
 'type': 'symbol',
-'source': 'Arret de bus', // reference the data source
+'source': 'Arrets de bus', // reference the data source
 'layout': {
 'icon-image': 'arret_bus', // reference the image
 'icon-size': 0.05
 },
-filter: ['==', 'layer', 'Arrêt de bus']
+filter: ['==', 'layer', 'Arret de bus']
 });
 
    
@@ -223,21 +224,21 @@ map.addImage('arret_tram', image);
 
      // Ajout parkings
   
-     map.addSource('Arret de tramway', {
+     map.addSource('Arrets de tramway', {
             type: 'geojson',
             data: 'https://raw.githubusercontent.com/bruhnild/chu-angers/main/data/transport.geojson'
         });
 
 
 map.addLayer({
-'id': 'Arret de tramway',
+'id': 'Arrets de tramway',
 'type': 'symbol',
-'source': 'Arret de tramway', // reference the data source
+'source': 'Arrets de tramway', // reference the data source
 'layout': {
 'icon-image': 'arret_tram', // reference the image
 'icon-size': 0.05
 },
-filter: ['==', 'layer', 'Arret de bus']
+filter: ['==', 'layer', 'Arret de tramway']
 });
 
    
@@ -305,39 +306,40 @@ map.addLayer({
 
 });
   
-  
-  //Interactivité HOVER
-
+// Create a popup, but don't add it to the map yet.
 var popup = new mapboxgl.Popup({
-    className: "Mypopup",
-  closeButton: false,
-    closeOnClick: false });
-
-map.on('mousemove', function(e) {
-    var features = map.queryRenderedFeatures(e.point, { layers: ['Parkings'] });
-    // Change the cursor style as a UI indicator.
-    map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
-
-    if (!features.length) {
-        popup.remove();
-        return; }
- 
-    var feature = features[0];
-        popup.setLngLat(feature.geometry.coordinates)
-          .setHTML('<b>'+ feature.properties.layer + '</b>')
-        .addTo(map);
-
+    closeButton: false
 });
 
+  //Interactivité HOVER
+
+map.on('mousemove', 'Batiments', function(e) {
+        // Change the cursor style as a UI indicator.
+        map.getCanvas().style.cursor = 'pointer';
+
+        // Single out the first found feature.
+        var feature = e.features[0];
+
+        // Display a popup with the name of the county
+        popup.setLngLat(e.lngLat)
+            .setText(feature.properties.nom)
+            .addTo(map);
+    });
+
+    map.on('mouseleave', 'Batiments', function() {
+        map.getCanvas().style.cursor = '';
+        popup.remove();
+    });
+  
   // Configuration affichage menu couches
- switchlayer = function (lname) {
-            if (document.getElementById(lname ).checked) {
+
+        switchlayer = function (lname) {
+            if (document.getElementById(lname).checked) {
                 map.setLayoutProperty(lname, 'visibility', 'visible');
             } else {
                 map.setLayoutProperty(lname, 'visibility', 'none');
            }
-        };
-  
+        }
   
     // Ajout controle de navigation et echelle 
   
