@@ -38,7 +38,7 @@
    
     <div class='menu'>
     <hr>
-<label class="categoryLabel"><B>Données Réferentielles</B></label>
+<label class="categoryLabel"><B>CHU d'Angers</B></label>
           <br>
  <input type="checkbox" id="Batiments" value="Batiments" onchange="switchlayer('Batiments')" checked/>
 <label for="Batiments">Batiments</label>
@@ -48,8 +48,17 @@
 <input type="checkbox" id="Parkings" value="Parkings" onchange="switchlayer('Parkings')" checked/>
 <label for="Parkings">Parkings</label>
           <br>
-<input type="checkbox" id="Transports en commun" value="Transports en commun" onchange="switchlayer('Transports en commun')" checked/>
-<label for="Transports en commun">Transports en commun</label>
+<input type="checkbox" id="Parkings PMR" value="Parkings PMR" onchange="switchlayer('Parkings PMR')" checked/>
+<label for="Parkings">Parkings PMR</label>
+          <br>  
+<input type="checkbox" id="Parkings vélos" value="Parkings vélos" onchange="switchlayer('Parkings vélos')" checked/>
+<label for="Parkings">Parkings vélos</label>
+          <br>                 
+<input type="checkbox" id="Arrets de bus" value="Arrets de bus" onchange="switchlayer('Arrets de bus')" checked/>
+<label for="Arrets de bus">Arrets de bus</label>
+          <br>                 
+<input type="checkbox" id="Arrets de tramway" value="Arrets de tramway" onchange="switchlayer('Arrets de tramway')" checked/>
+<label for="Arrets de tramway">Arrets de tramway</label>
   <hr>
 </div>
 <script>
@@ -66,15 +75,86 @@ var map = new mapboxgl.Map({
   minZoom:14.5
     });
 
-const images =[
-  {imageUrl: 'https://res.cloudinary.com/do0y4qr5g/image/upload/v1686579525/chu_angers/parking-lot_vphpxp.png', id: 'image_1'},
-  {imageUrl: 'https://res.cloudinary.com/do0y4qr5g/image/upload/v1686579525/chu_angers/disabled_parking_gw5oa5.png', id: 'image_2'}
-]
 
   // Ajout des données
       
 map.on('load', function () {   
 
+// PARKINGS PMR
+
+// Load an image from an external URL.
+map.loadImage(
+'https://res.cloudinary.com/do0y4qr5g/image/upload/v1686585971/chu_angers/disabled_parking_qlma7q.png',
+(error, image) => {
+if (error) throw error;
+
+// Add the image to the map style.
+map.addImage('pmr', image);
+
+     // Ajout parkings
+  
+  map.addSource('Parkings PMR', {
+            type: 'geojson',
+            data: 'https://raw.githubusercontent.com/bruhnild/chu-angers/main/data/parkings.geojson'
+        });
+
+
+map.addLayer({
+'id': 'Parkings PMR',
+'type': 'symbol',
+'source': 'Parkings PMR', // reference the data source
+'layout': {
+'icon-image': 'pmr', // reference the image
+'icon-size': 0.05
+},
+filter: ['==', 'layer', 'Parking PMR']
+});
+
+   
+});
+
+// PARKINGS VELOS
+
+// Load an image from an external URL.
+map.loadImage(
+'https://res.cloudinary.com/do0y4qr5g/image/upload/v1686585860/chu_angers/bike_park_bajshl.png',
+(error, image) => {
+if (error) throw error;
+
+// Add the image to the map style.
+map.addImage('parking_velo', image);
+
+     // Ajout parkings
+  
+  map.addSource('Parkings vélos', {
+            type: 'geojson',
+            data: 'https://raw.githubusercontent.com/bruhnild/chu-angers/main/data/parkings.geojson'
+        });
+
+
+map.addLayer({
+'id': 'Parkings vélos',
+'type': 'symbol',
+'source': 'Parkings vélos', // reference the data source
+'layout': {
+'icon-image': 'parking_velo', // reference the image
+'icon-size': 0.05
+},
+filter: ['==', 'layer', 'Parking vélos']
+});
+
+   
+});
+
+// PARKINGS
+
+map.loadImage(
+'https://res.cloudinary.com/do0y4qr5g/image/upload/v1686585735/chu_angers/car_park_yfahzk.png',
+(error, image) => {
+if (error) throw error;
+
+// Add the image to the map style.
+map.addImage('parking', image);
 
      // Ajout parkings
   
@@ -84,22 +164,86 @@ map.on('load', function () {
         });
 
 
-    map.addLayer({
-    'id': 'Parkings',
-    'type': 'symbol',
-    'source': 'Parkings', 
-    "layout": {
-    "icon-size": 0.05,
-    "icon-image": [
-      "get",
-      "url"
-    ],
-    },
-    "maxzoom": 24,
-    "minzoom": 0
-    });   
+map.addLayer({
+'id': 'Parkings',
+'type': 'symbol',
+'source': 'Parkings', // reference the data source
+'layout': {
+'icon-image': 'parking', // reference the image
+'icon-size': 0.05
+},
+filter: ['==', 'layer', 'Parking']
+});
 
-   //BATIMENTS 
+   
+});
+
+
+// ARRETS DE BUS
+
+map.loadImage(
+'https://res.cloudinary.com/do0y4qr5g/image/upload/e_background_removal/v1686583925/chu_angers/bus_stop_u3aukd.png',
+(error, image) => {
+if (error) throw error;
+
+// Add the image to the map style.
+map.addImage('arret_bus', image);
+
+     // Ajout parkings
+  
+     map.addSource('Arret de bus', {
+            type: 'geojson',
+            data: 'https://raw.githubusercontent.com/bruhnild/chu-angers/main/data/transport.geojson'
+        });
+
+
+map.addLayer({
+'id': 'Arret de bus',
+'type': 'symbol',
+'source': 'Arret de bus', // reference the data source
+'layout': {
+'icon-image': 'arret_bus', // reference the image
+'icon-size': 0.05
+},
+filter: ['==', 'layer', 'Arrêt de bus']
+});
+
+   
+});
+
+// ARRETS DE TRAMWAY
+
+map.loadImage(
+'https://res.cloudinary.com/do0y4qr5g/image/upload/v1686586045/chu_angers/tram_stop_lbu9ma.png',
+(error, image) => {
+if (error) throw error;
+
+// Add the image to the map style.
+map.addImage('arret_tram', image);
+
+     // Ajout parkings
+  
+     map.addSource('Arret de tramway', {
+            type: 'geojson',
+            data: 'https://raw.githubusercontent.com/bruhnild/chu-angers/main/data/transport.geojson'
+        });
+
+
+map.addLayer({
+'id': 'Arret de tramway',
+'type': 'symbol',
+'source': 'Arret de tramway', // reference the data source
+'layout': {
+'icon-image': 'arret_tram', // reference the image
+'icon-size': 0.05
+},
+filter: ['==', 'layer', 'Arret de bus']
+});
+
+   
+});
+
+//BATIMENTS 
 
 map.addSource('Batiments', {
         type: 'geojson',
@@ -159,26 +303,7 @@ map.addLayer({
   });
 
 
-   
-     // Ajout lignes de metros
-  
-     map.addSource('transport', {
-            type: 'geojson',
-            data: 'https://raw.githubusercontent.com/bruhnild/chu-angers/main/data/transport.geojson'
-        });
-
-     map.addLayer({
-            'id': 'Transports en commun',
-            'type': 'circle',
-            'source': 'transport',
-            'paint': {'circle-stroke-color': 'white', 
-                      'circle-stroke-width': 3, 
-                      'circle-radius' : 6,
-                      'circle-color': '#0074D9'}}
-                 );  
-  
-
-         });
+});
   
   
   //Interactivité HOVER
@@ -213,7 +338,7 @@ map.on('mousemove', function(e) {
            }
         };
   
-	
+  
     // Ajout controle de navigation et echelle 
   
 map.addControl(new mapboxgl.NavigationControl({position: 'top-left'}));  
